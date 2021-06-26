@@ -11,14 +11,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(locations = {"classpath:spring/redisConfig.xml"})
-public class RedisTest {
-
-    //"classpath:spring/applicationContext.xml"
-
-//    @Autowired
-//    RedisService RedisService;
-
+@ContextConfiguration(locations = {"classpath:spring/springMvc.xml","classpath:spring/redisConfig.xml"})
+public class RedisTemplateTest {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
