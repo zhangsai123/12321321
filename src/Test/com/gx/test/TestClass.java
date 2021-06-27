@@ -58,10 +58,13 @@ public class TestClass {
 
     }
 
+    /**
+     * 通过注解的xml方式获取Bean
+     */
     @Test
-    public void GetBeanMethodByXml(){
+    public void GetBeanMethodByXmlMethod(){
         /**
-         * 通过xml文件的形式,向IOC容器中注入配置Bean
+         * 将要放入Spring容器的Bean配置在xml文件中,通过xml文件的形式向IOC容器中注入配置Bean
          */
         ApplicationContext context = new ClassPathXmlApplicationContext("spring/beanConfig.xml");
         Hr hr = (Hr) context.getBean("Hr");
@@ -73,12 +76,32 @@ public class TestClass {
      * 通过注解的方式获取Bean
      */
     @Test
-    public  void GetBeanByAnnotation(){
+    public  void GetBeanByAnnotationMethod(){
         /**
-         * TestConfig,TestConfig中使用了@ComponentScan扫描注解，其作用相当于<context:component-scan>
+         * TestConfig中使用了@ComponentScan扫描注解，其作用相当于<context:component-scan>
          */
         ApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class);
+        /**
+         * 如果将User类上的@Component注解去除，Spring无法将User类的对象放入IOC中，执行 context.getBean(User.class) 会报错
+         * 这时我们可以用一个 UserFactoryBean 实现 FactoryBean 接口来创建User类对象，并将其放入Spirng IOC容器中去
+         */
         System.out.println(context.getBean(User.class));
     }
+
+
+    @Test
+    public void BeanFactoryProcessorTestMethod(){
+
+        ApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class);
+        /**
+         * 虽然TestB类上并没有加入任何Spring注解，但是通过实现 BeanFactoryPostProcessor 接口的形式，
+         * 在 postProcessBeanFactory 方法中，将 @Component("TestA") 所对应的 TestA 类修改成了 TestB 类，
+         * 这效果也就相当于在 TestB 类上加了了一个 @Component("TestA") 的注解一样
+         * 参考 MyBeanFactoryProcessor
+         */
+        System.out.println(context.getBean(TestB.class));
+    }
+
+
 
 }
